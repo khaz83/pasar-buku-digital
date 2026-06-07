@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pasar Buku Digital - Buku Lama, Ilmu Baharu</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #090d16;
+            color: #f1f5f9;
+        }
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.6);
+        }
+        /* Page animation transitions */
+        .page-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px border rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-0 md:p-6 bg-gradient-to-tr from-slate-950 via-slate-900 to-emerald-950/25">
+
+    <!-- Android Viewport Wrapper -->
+    <div id="phone-container" class="relative w-full max-w-[440px] h-screen md:h-[880px] bg-slate-950 md:rounded-[55px] md:border-[10px] md:border-slate-800 md:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col transition-all duration-300">
+        
+        <!-- Android Screen Notch & Status Bar -->
+        <div class="bg-slate-950 px-6 pt-3 pb-1.5 flex justify-between items-center text-[11px] text-slate-400 select-none z-50 shrink-0">
+            <span class="font-bold tracking-tight" id="android-clock">12:00</span>
+            <!-- Notch Simulated for Desktop View -->
+            <div class="hidden md:block w-32 h-4.5 bg-slate-950 rounded-b-2xl absolute left-1/2 -translate-x-1/2 top-0 z-50"></div>
+            <div class="flex items-center gap-1.5">
+                <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.2 rounded font-bold border border-emerald-500/20">4G LTE</span>
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-full text-emerald-400"></i>
+                <span class="font-bold">98%</span>
+            </div>
+        </div>
+
+        <!-- Simulated App Header -->
+        <header id="main-app-header" class="hidden bg-gradient-to-r from-emerald-800 to-teal-800 text-white px-5 py-3.5 flex items-center justify-between shadow-lg shrink-0 z-40">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center border border-white/15">
+                    <i class="fas fa-book-open text-emerald-300"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-extrabold tracking-wide uppercase">Pasar Buku</h1>
+                    <p class="text-[9px] text-emerald-200 tracking-wider font-semibold">SK SMART LESTARI</p>
+                </div>
+            </div>
+            <!-- Interactive Header Points Gauge -->
+            <div class="flex items-center gap-2">
+                <!-- Mode Toggle Badge (Teacher vs Parent Mode) -->
+                <button id="btn-toggle-pss-mode" class="bg-slate-950/40 text-[9px] font-bold text-teal-300 border border-teal-500/30 px-2 py-1 rounded-lg hover:bg-slate-950/80 transition-all flex items-center gap-1">
+                    <i class="fas fa-chalkboard-teacher"></i> Mod PSS
+                </button>
+                <div class="bg-emerald-900/60 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 border border-emerald-500/30 shadow-inner">
+                    <i class="fas fa-seedling text-emerald-400 text-xs animate-bounce"></i>
+                    <span id="header-user-points" class="text-xs font-black text-white">0</span>
+                    <span class="text-[9px] text-emerald-300">Mata</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Scrollable App Viewport -->
+        <main id="app-viewport" class="flex-1 overflow-y-auto custom-scroll bg-slate-950 flex flex-col relative">
+
+            <!-- SCREEN 1: SPLASH & INTRO -->
+            <section id="screen-splash" class="page-transition flex-1 flex flex-col justify-between p-7 text-center bg-gradient-to-b from-slate-900 via-slate-950 to-emerald-950/40">
+                <div class="pt-16 space-y-6">
+                    <div class="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-[28px] mx-auto flex items-center justify-center shadow-[0_10px_30px_rgba(16,185,129,0.3)] animate-pulse">
+                        <i class="fas fa-book-reader text-slate-950 text-5xl"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <h2 class="text-3xl font-black text-white tracking-tight">Pasar Buku<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Digital</span></h2>
+                        <div class="inline-block bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
+                            <p class="text-emerald-400 font-extrabold text-[10px] tracking-widest uppercase">Buku Lama, Ilmu Baharu</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-xs px-4 leading-relaxed">
+                        Inovasi ekosistem pintar menghubungkan keluarga murid sekolah bagi menyelamatkan buku rujukan lama, mengurangkan kos, dan mengumpul mata hijau ganjaran!
+                    </p>
+                </div>
+
+                <div class="space-y-3.5 pb-6">
+                    <button id="btn-splash-continue" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 active:scale-95 transition-all text-slate-950 font-black py-4 px-6 rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                        Mulakan Aplikasi <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <p class="text-[9px] text-slate-500 font-medium">Urusan penyerahan dikawal selia di bawah Pusat Sumber Sekolah (PSS).</p>
+                </div>
+            </section>
+
+            <!-- SCREEN 2: AUTHENTICATION (LOGIN & REGISTER) -->
+            <section id="screen-auth" class="hidden page-transition p-6 space-y-5 flex-1 flex flex-col justify-start">
+                <div class="text-center space-y-1">
+                    <h3 class="text-xl font-black text-white">Akses Portal Keluarga</h3>
+                    <p class="text-xs text-slate-400">Daftarkan maklumat penjaga untuk mula mengakses pasar buku sekolah.</p>
+                </div>
+
+                <!-- Custom Tabs for Login vs Register -->
+                <div class="grid grid-cols-2 bg-slate-900/60 p-1 rounded-xl border border-slate-800">
+                    <button id="tab-btn-login" class="py-2.5 rounded-lg text-xs font-bold text-emerald-400 bg-slate-950 border border-slate-850/50 transition-all">
+                        Log Masuk Pantas
+                    </button>
+                    <button id="tab-btn-register" class="py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all">
+                        Pendaftaran Baru
+                    </button>
+                </div>
+
+                <!-- Auth Container Form -->
+                <div id="auth-forms-wrapper" class="space-y-4">
+                    <!-- Tab Content 1: Log Masuk Pantas (Auto Login Simulator) -->
+                    <div id="auth-login-panel" class="space-y-4">
+                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 text-center">
+                            <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-lg">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <h4 class="text-xs font-bold text-slate-200">Adakah anda mempunyai akaun aktif?</h4>
+                            <p class="text-[10px] text-slate-400 leading-relaxed">Gunakan simulasi akaun sedia ada yang mempunyai rekod mata ganjaran terkumpul atau mulakan pendaftaran akaun baru di tab pendaftaran.</p>
+                            <button id="btn-login-quick" class="w-full bg-slate-800 hover:bg-slate-750 active:scale-95 text-emerald-400 border border-emerald-500/20 font-bold py-3 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fas fa-sign-in-alt"></i> Masuk Dengan Akaun Sedia Ada
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content 2: Register Form -->
+                    <form id="form-register-new" class="hidden space-y-3.5 text-left">
+                        <!-- Nama Ibu Bapa / Penjaga -->
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Nama Ibu Bapa / Penjaga *</label>
+                            <input type="text" id="reg-parent-name" required placeholder="Contoh: Puan Farah (Ibu Mia)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-600 transition-all">
+                        </div>
+
+                        <!-- No Telefon -->
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">No. Telefon WhatsApp *</label>
+                            <input type="tel" id="reg-phone" required placeholder="Contoh: 012-3456789" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-600 transition-all">
+                        </div>
+
+                        <!-- Alamat Kediaman -->
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Alamat Kediaman *</label>
+                            <textarea id="reg-address" required placeholder="Masukkan alamat lengkap anda untuk pengesahan kediaman..." rows="2" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-600 resize-none transition-all"></textarea>
+                        </div>
+
+                        <!-- Nama Anak -->
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Nama Pelajar (Anak) *</label>
+                            <input type="text" id="reg-child-name" required placeholder="Contoh: Mia Amanda" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-600 transition-all">
+                        </div>
+
+                        <!-- Kelas Anak -->
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kelas Pelajar *</label>
+                            <select id="reg-class" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                                <option value="">-- Pilih Kelas --</option>
+                                <option value="1 Gemilang">1 Gemilang</option>
+                                <option value="2 Gemilang">2 Gemilang</option>
+                                <option value="3 Gemilang">3 Gemilang</option>
+                                <option value="4 Gemilang">4 Gemilang</option>
+                                <option value="5 Gemilang">5 Gemilang</option>
+                                <option value="6 Gemilang">6 Gemilang</option>
+                            </select>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 active:scale-95 transition-all text-slate-950 font-black py-3.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md">
+                            <i class="fas fa-user-plus"></i> Hantar & Daftar Sekarang
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- SCREEN 3: HOME DASHBOARD -->
+            <section id="screen-dashboard" class="hidden page-transition p-5 space-y-5">
+                <!-- User Welcome Banner Card -->
+                <div class="bg-gradient-to-br from-emerald-800 via-emerald-950 to-slate-950 rounded-3xl p-5 text-white relative overflow-hidden border border-emerald-500/10 shadow-lg">
+                    <div class="relative z-10 space-y-3">
+                        <div class="space-y-1">
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Keluarga Lestari SKSL</span>
+                            <h3 id="dash-welcome-name" class="text-lg font-black tracking-tight">-</h3>
+                            <p class="text-[10px] text-emerald-200/80 flex items-center gap-1.5">
+                                <i class="fas fa-child text-emerald-400"></i> Anak: <span id="dash-welcome-child" class="font-bold text-white">-</span>
+                                <span class="text-emerald-500">|</span>
+                                <i class="fas fa-school text-emerald-400"></i> Kelas: <span id="dash-welcome-class" class="font-bold text-white">-</span>
+                            </p>
+                        </div>
+
+                        <!-- Quick Level Meter -->
+                        <div class="bg-slate-900/80 border border-slate-800/40 p-3 rounded-2xl space-y-1.5">
+                            <div class="flex justify-between items-center text-[10px]">
+                                <span class="font-bold text-slate-300">Peringkat Kelestarian:</span>
+                                <span id="dash-badge-title" class="bg-emerald-500/10 text-emerald-400 font-extrabold px-2 py-0.5 rounded-full border border-emerald-500/20">Rookie Hijau</span>
+                            </div>
+                            <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-850">
+                                <div id="dash-badge-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-700"></div>
+                            </div>
+                            <div class="flex justify-between items-center text-[9px] text-slate-400">
+                                <span id="dash-badge-min-points">0 Mata</span>
+                                <span id="dash-badge-next-points">Kumpul 100 Mata</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Absolute Decorative Icon -->
+                    <div class="absolute -right-8 -bottom-8 opacity-10 text-[140px] text-emerald-400 pointer-events-none">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                </div>
+
+                <!-- Green Score Board Quick Glance Grid -->
+                <div class="grid grid-cols-2 gap-3.5">
+                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 relative overflow-hidden">
+                        <div class="w-10 h-10 bg-emerald-500/15 rounded-xl flex items-center justify-center text-emerald-400 shrink-0">
+                            <i class="fas fa-leaf text-lg"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-[9px] text-slate-400 uppercase font-black tracking-wider">Mata Hijau</p>
+                            <h4 id="dash-stat-points" class="text-base font-black text-white">0</h4>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 relative overflow-hidden">
+                        <div class="w-10 h-10 bg-teal-500/15 rounded-xl flex items-center justify-center text-teal-400 shrink-0">
+                            <i class="fas fa-piggy-bank text-lg"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-[9px] text-slate-400 uppercase font-black tracking-wider">Penjimatan</p>
+                            <h4 id="dash-stat-savings" class="text-base font-black text-white">RM0.00</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Hub Shortcuts -->
+                <div class="space-y-2.5">
+                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Menu Aktiviti Utama</h4>
+                    <div class="grid grid-cols-2 gap-3.5">
+                        <button onclick="switchTab('nav-tab-sell')" class="p-4 bg-slate-900/40 hover:bg-slate-900 border border-slate-800 rounded-2xl text-left transition-all hover:border-emerald-500/30 group active:scale-95">
+                            <div class="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500/20 transition-colors mb-3.5">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <span class="text-xs font-extrabold text-slate-200 block">Senaraikan Buku</span>
+                            <span class="text-[9px] text-slate-500 mt-1 block">Jual atau Derma buku lama</span>
+                        </button>
+
+                        <button onclick="switchTab('nav-tab-market')" class="p-4 bg-slate-900/40 hover:bg-slate-900 border border-slate-800 rounded-2xl text-left transition-all hover:border-emerald-500/30 group active:scale-95">
+                            <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 group-hover:bg-blue-500/20 transition-colors mb-3.5">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <span class="text-xs font-extrabold text-slate-200 block">Pasar Buku Terpakai</span>
+                            <span class="text-[9px] text-slate-500 mt-1 block">Cari & tempah mengikut subjek</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Educational Carousel Tip Widget -->
+                <div class="bg-gradient-to-r from-emerald-950/40 to-slate-950 border border-emerald-900/30 rounded-2xl p-4 flex gap-3.5">
+                    <span class="text-emerald-400 mt-0.5 text-base shrink-0"><i class="fas fa-lightbulb"></i></span>
+                    <div class="space-y-1">
+                        <h5 class="text-xs font-extrabold text-emerald-300">Impak Hijau Anda</h5>
+                        <p class="text-[10px] text-slate-400 leading-relaxed">Menyumbang 1 buku rujukan lama menyelamatkan sekurang-kurangnya 0.8kg sisa karbon kertas daripada dibuang!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SCREEN 4: MARKETPLACE (CARI & TEMPAH) -->
+            <section id="screen-market" class="hidden page-transition flex-1 flex flex-col min-h-0">
+                <!-- Search and Filters Bar -->
+                <div class="p-4 bg-slate-900/80 border-b border-slate-800/80 space-y-3 shrink-0 z-30">
+                    <div class="relative">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"><i class="fas fa-search"></i></span>
+                        <input type="text" id="market-search-input" placeholder="Cari tajuk rujukan atau subjek..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 placeholder-slate-600 transition-all">
+                    </div>
+
+                    <!-- Filter Categories Horizontal -->
+                    <div class="flex gap-2 overflow-x-auto pb-1.5 custom-scroll text-[10px] whitespace-nowrap">
+                        <button id="filter-btn-all" onclick="setMarketFilter('all')" class="px-3.5 py-2 bg-emerald-500 text-slate-950 rounded-full font-black transition-all">Semua Buku</button>
+                        <button id="filter-btn-free" onclick="setMarketFilter('free')" class="px-3.5 py-2 bg-slate-950 border border-slate-800 text-slate-400 rounded-full font-bold hover:border-emerald-500/40 hover:text-emerald-400 transition-all">🎁 Percuma / Derma</button>
+                        <button id="filter-btn-paid" onclick="setMarketFilter('paid')" class="px-3.5 py-2 bg-slate-950 border border-slate-800 text-slate-400 rounded-full font-bold hover:border-emerald-500/40 hover:text-emerald-400 transition-all">📉 Harga Rendah (≤ RM5)</button>
+                        <button id="filter-btn-sains" onclick="setMarketFilter('Sains')" class="px-3.5 py-2 bg-slate-950 border border-slate-800 text-slate-400 rounded-full font-bold hover:border-emerald-500/40 hover:text-emerald-400 transition-all">🧪 Sains</button>
+                        <button id="filter-btn-math" onclick="setMarketFilter('Matematik')" class="px-3.5 py-2 bg-slate-950 border border-slate-800 text-slate-400 rounded-full font-bold hover:border-emerald-500/40 hover:text-emerald-400 transition-all">🔢 Matematik</button>
+                    </div>
+                </div>
+
+                <!-- Dynamic Container for Book Cards -->
+                <div class="flex-1 overflow-y-auto p-4 custom-scroll space-y-3.5" id="market-books-container">
+                    <!-- Javascript will inject fully responsive cards -->
+                </div>
+            </section>
+
+            <!-- SCREEN 5: TAMBAH BUKU (JUAL/DERMA) -->
+            <section id="screen-sell" class="hidden page-transition p-5 space-y-4">
+                <div class="border-b border-slate-800 pb-3">
+                    <h3 class="text-base font-black text-white flex items-center gap-2">
+                        <i class="fas fa-file-invoice text-emerald-400"></i> Borang Sumbangan Buku
+                    </h3>
+                    <p class="text-[10px] text-slate-400 mt-0.5">Sila isikan butiran buku rujukan lama anak yang ingin dijual atau didermakan.</p>
+                </div>
+
+                <!-- Create Listing Form -->
+                <form id="form-add-book" class="space-y-4 text-left">
+                    <!-- Title -->
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Tajuk Buku Rujukan *</label>
+                        <input type="text" id="add-book-title" required placeholder="Contoh: Rujukan Sains Tahun 6 Hebat" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-600 transition-all">
+                    </div>
+
+                    <!-- Subject & Grade Grade Row -->
+                    <div class="grid grid-cols-2 gap-3.5">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Subjek *</label>
+                            <select id="add-book-subject" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-350 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                                <option value="">-- Subjek --</option>
+                                <option value="Sains">Sains</option>
+                                <option value="Matematik">Matematik</option>
+                                <option value="Bahasa Melayu">Bahasa Melayu</option>
+                                <option value="Bahasa Inggeris">Bahasa Inggeris</option>
+                                <option value="Sejarah">Sejarah</option>
+                                <option value="Geografi">Geografi</option>
+                                <option value="Pendidikan Islam / Moral">Pendidikan Islam / Moral</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Tahun / Tingkatan *</label>
+                            <select id="add-book-year" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-350 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                                <option value="">-- Tahun --</option>
+                                <option value="Tahun 1">Tahun 1</option>
+                                <option value="Tahun 2">Tahun 2</option>
+                                <option value="Tahun 3">Tahun 3</option>
+                                <option value="Tahun 4">Tahun 4</option>
+                                <option value="Tahun 5">Tahun 5</option>
+                                <option value="Tahun 6">Tahun 6</option>
+                                <option value="Tingkatan 1">Tingkatan 1</option>
+                                <option value="Tingkatan 2">Tingkatan 2</option>
+                                <option value="Tingkatan 3">Tingkatan 3</option>
+                                <option value="Tingkatan 4">Tingkatan 4</option>
+                                <option value="Tingkatan 5">Tingkatan 5</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Book Condition Selector -->
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Keadaan Fizikal Buku *</label>
+                        <select id="add-book-condition" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-350 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                            <option value="Sangat Baik">Sangat Baik (Buku kelihatan macam baru)</option>
+                            <option value="Baik" selected>Baik (Ada sedikit nota/bersih)</option>
+                            <option value="Sederhana">Sederhana (Ada koyakan kecil/kuning)</option>
+                        </select>
+                    </div>
+
+                    <!-- Type Selector (Jual vs Derma) Radio -->
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Jenis Perkongsian *</label>
+                        <div class="grid grid-cols-2 gap-3.5 pt-1">
+                            <button type="button" id="btn-type-sell" onclick="setAddBookType('Jual')" class="py-3 bg-slate-900 border-2 border-emerald-500 text-emerald-400 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+                                <i class="fas fa-tags"></i> Jual Buku
+                            </button>
+                            <button type="button" id="btn-type-donate" onclick="setAddBookType('Derma')" class="py-3 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+                                <i class="fas fa-hand-holding-heart"></i> Derma (Percuma)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Price Input Box -->
+                    <div id="wrapper-book-price" class="space-y-1 transition-all">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Harga Jualan (RM) *</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">RM</span>
+                            <input type="number" id="add-book-price" min="0" step="0.50" value="5.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                        </div>
+                        <p class="text-[9px] text-slate-500">Ibu bapa digalakkan untuk meletakkan harga mampu milik (RM1.00 - RM10.00 sahaja).</p>
+                    </div>
+
+                    <!-- Points Guideline Notice -->
+                    <div class="bg-slate-900 border border-slate-850 p-3 rounded-2xl flex gap-3">
+                        <span class="text-amber-400 text-xs mt-0.5"><i class="fas fa-star"></i></span>
+                        <div class="text-[10px] text-slate-400 leading-normal">
+                            <span class="font-extrabold text-slate-200">Bonus Ganjaran Mata Hijau:</span>
+                            <ul class="list-disc pl-4 mt-1 space-y-0.5">
+                                <li>Menderma buku (Percuma): <span class="text-teal-400 font-bold">+20 Mata</span></li>
+                                <li>Menjual buku (Mampu Milik): <span class="text-emerald-400 font-bold">+5 Mata</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Submit Action Button -->
+                    <button type="submit" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 active:scale-95 transition-all text-slate-950 font-black py-4 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md">
+                        <i class="fas fa-check-circle"></i> Selesai & Senaraikan Sekarang
+                    </button>
+                </form>
+            </section>
+
+            <!-- SCREEN 6: STATISTIK HIJAU & GANJARAN -->
+            <section id="screen-stats" class="hidden page-transition p-5 space-y-5">
+                <div class="border-b border-slate-800 pb-2.5">
+                    <h3 class="text-base font-black text-white flex items-center gap-2">
+                        <i class="fas fa-chart-line text-emerald-400"></i> Papan Pemuka Statistik Hijau
+                    </h3>
+                    <p class="text-[10px] text-slate-400 mt-0.5">Pantau rekod penjimatan kos serta karbon sisa kertas terkumpul.</p>
+                </div>
+
+                <!-- Multi-Impact Data Figures Grid -->
+                <div class="grid grid-cols-2 gap-3.5">
+                    <div class="bg-gradient-to-br from-slate-900 to-emerald-950/20 border border-slate-800 p-4 rounded-2xl text-center space-y-1 shadow-sm">
+                        <span class="text-[11px] text-emerald-400 block"><i class="fas fa-cloud-download-alt text-lg"></i></span>
+                        <h4 id="stat-books-listed" class="text-xl font-black text-white">0</h4>
+                        <p class="text-[8px] text-slate-500 uppercase tracking-widest font-black">Buku Disenaraikan</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-slate-900 to-teal-950/20 border border-slate-800 p-4 rounded-2xl text-center space-y-1 shadow-sm">
+                        <span class="text-[11px] text-teal-400 block"><i class="fas fa-handshake text-lg"></i></span>
+                        <h4 id="stat-books-transacted" class="text-xl font-black text-white">0</h4>
+                        <p class="text-[8px] text-slate-500 uppercase tracking-widest font-black">Selesai Bertukar</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-slate-900 to-indigo-950/20 border border-slate-800 p-4 rounded-2xl text-center space-y-1 shadow-sm">
+                        <span class="text-[11px] text-indigo-400 block"><i class="fas fa-donate text-lg"></i></span>
+                        <h4 id="stat-books-donated" class="text-xl font-black text-white">0</h4>
+                        <p class="text-[8px] text-slate-500 uppercase tracking-widest font-black">Buku Percuma/Derma</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-slate-900 to-amber-950/20 border border-slate-800 p-4 rounded-2xl text-center space-y-1 shadow-sm">
+                        <span class="text-[11px] text-amber-400 block"><i class="fas fa-coins text-lg"></i></span>
+                        <h4 id="stat-savings-total" class="text-xl font-black text-white">RM0.00</h4>
+                        <p class="text-[8px] text-slate-500 uppercase tracking-widest font-black">Anggaran Penjimatan</p>
+                    </div>
+                </div>
+
+                <!-- Carbon Reduction Progress Tracker Card -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
+                    <h4 class="text-xs font-black text-slate-350 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fas fa-globe-asia text-emerald-400"></i> Indeks Kelestarian Sekolah (SJS)
+                    </h4>
+                    
+                    <div class="flex items-center gap-4 bg-slate-950/60 p-4 rounded-2xl border border-slate-850/40">
+                        <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400 text-2xl shrink-0">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <h5 class="text-xs font-extrabold text-white">Persamaan Pokok Diselamatkan</h5>
+                            <p id="stat-equivalent-trees" class="text-[10px] text-slate-400 leading-normal">Membantu menyelamatkan <span class="text-emerald-400 font-bold">0.02</span> pokok dewasa!</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-[10px] font-bold">
+                            <span class="text-slate-400">Karbon Terpelihara:</span>
+                            <span id="stat-total-co2" class="text-emerald-400 font-black">0.0 kg CO2</span>
+                        </div>
+                        <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
+                            <div id="stat-co2-progress-bar" class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full w-[2%] transition-all duration-500"></div>
+                        </div>
+                        <p class="text-[9px] text-slate-500 leading-normal">Sasaran Musim Sekolah Ini: 100 kg CO2 sisa kertas berjaya diselamatkan menerusi kitar semula.</p>
+                    </div>
+                </div>
+
+                <!-- Green Certificate Box -->
+                <div id="wrapper-cert-card" class="bg-slate-900 border-2 border-dashed border-slate-800 rounded-3xl p-5 text-center space-y-3.5 relative overflow-hidden transition-all duration-300">
+                    <div class="absolute inset-0 bg-emerald-500/5 opacity-0 transition-opacity" id="cert-unlocked-glow"></div>
+                    <div class="text-slate-600 text-4xl mx-auto" id="cert-icon-box">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="text-xs font-black text-slate-300" id="cert-title-label">Sijil Penghargaan Murid Lestari</h4>
+                        <p class="text-[10px] text-slate-400 leading-relaxed" id="cert-desc-label">Buka kunci sijil penghargaan digital ini dengan mengumpul sekurang-kurangnya <span class="font-extrabold text-emerald-400">100 Mata Hijau</span>.</p>
+                    </div>
+                    <button id="btn-action-cert" disabled onclick="downloadLestariCertificate()" class="w-full bg-slate-800 text-slate-500 font-bold py-3 rounded-xl text-xs transition-all cursor-not-allowed">
+                        Sijil Terkunci
+                    </button>
+                </div>
+            </section>
+
+            <!-- SCREEN 7: PROFILE SAYA & LOG AKTIVITI -->
+            <section id="screen-profile" class="hidden page-transition p-5 space-y-5">
+                <div class="border-b border-slate-800 pb-2">
+                    <h3 class="text-base font-black text-white flex items-center gap-2">
+                        <i class="fas fa-id-card-alt text-emerald-400"></i> Profil Ahli Keluarga
+                    </h3>
+                    <p class="text-[10px] text-slate-400 mt-0.5">Kemaskinikan maklumat penjagaan dan pelajar anda di bawah.</p>
+                </div>
+
+                <!-- Editable Profile Info -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-4 text-left">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Nama Ibu Bapa / Penjaga</label>
+                        <input type="text" id="prof-input-parent" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3.5">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">No. Telefon</label>
+                            <input type="tel" id="prof-input-phone" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Peranan Utama</label>
+                            <select id="prof-input-role" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all">
+                                <option value="Ibu Bapa (Penjual)">Ibu Bapa (Penjual)</option>
+                                <option value="Ibu Bapa (Penderma)">Ibu Bapa (Penderma)</option>
+                                <option value="Murid (Pembeli)">Murid / Anak (Pembeli)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Alamat Rumah</label>
+                        <textarea id="prof-input-address" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 resize-none transition-all"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3.5">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Nama Anak</label>
+                            <input type="text" id="prof-input-child" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kelas Anak</label>
+                            <input type="text" id="prof-input-class" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all">
+                        </div>
+                    </div>
+
+                    <button onclick="saveUserProfileChange()" class="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 transition-all text-slate-950 font-black py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md">
+                        <i class="fas fa-save"></i> Simpan Kemaskini Profil
+                    </button>
+                </div>
+
+                <!-- Green points history tracker log list -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                    <h4 class="text-xs font-black text-slate-350 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-850 pb-2">
+                        <i class="fas fa-history text-emerald-400"></i> Rekod Aktiviti Hijau Anda
+                    </h4>
+                    <div id="wrapper-points-log-history" class="space-y-2.5 max-h-[220px] overflow-y-auto custom-scroll">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SCREEN 8: MODERASI GURU PSS (NEW COMPLETE LOGIC) -->
+            <section id="screen-pss" class="hidden page-transition p-5 space-y-5">
+                <div class="border-b border-slate-800 pb-2.5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-base font-black text-white flex items-center gap-2">
+                                <i class="fas fa-school-flag text-teal-400"></i> Portal Urus Guru PSS
+                            </h3>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Sahkan penyerahan buku fizikal dan pemindahan mata ganjaran.</p>
+                        </div>
+                        <button onclick="toggleTeacherMode(false)" class="bg-slate-900 text-slate-400 hover:text-slate-200 p-1.5 rounded-lg border border-slate-800 text-[10px]">
+                            Keluar Mod
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick info guidelines for teachers -->
+                <div class="bg-teal-950/20 border border-teal-900/40 p-4 rounded-2xl space-y-2 text-left">
+                    <h5 class="text-xs font-black text-teal-300 flex items-center gap-1.5">
+                        <i class="fas fa-shield-alt"></i> Manual Guru PSS:
+                    </h5>
+                    <ol class="list-decimal pl-4 space-y-1 text-[10px] text-slate-400 leading-relaxed">
+                        <li>Ibu bapa pembeli & penderma akan membawa <span class="font-bold text-white">Resit Tempahan</span> digital ke PSS.</li>
+                        <li>Guru PSS menyemak keadaan buku fizikal yang diletakkan di rak simpanan PSS oleh penjual.</li>
+                        <li>Sahkan penyerahan di bawah untuk melengkapkan proses & memindahkan mata hijau!</li>
+                    </ol>
+                </div>
+
+                <!-- List of Active Bookings Pending Teacher Approval -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-black text-slate-350 uppercase tracking-wider flex justify-between">
+                        <span>Senarai Menunggu Pengesahan</span>
+                        <span id="pss-pending-count" class="bg-teal-500/10 text-teal-400 px-2 rounded-full">0</span>
+                    </h4>
+
+                    <div id="pss-active-bookings-list" class="space-y-3 max-h-[380px] overflow-y-auto custom-scroll">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Simulated Android Soft Key & Tab Bar -->
+        <nav id="main-app-nav" class="hidden bg-slate-900 border-t border-slate-800/80 px-2 py-2.5 flex justify-between items-center text-slate-400 shrink-0 select-none z-40">
+            <button onclick="switchTab('nav-tab-dash')" id="nav-tab-dash" class="flex-1 flex flex-col items-center py-1 transition-all text-emerald-400">
+                <i class="fas fa-home text-lg mb-1"></i>
+                <span class="text-[9px] font-black uppercase">Utama</span>
+            </button>
+            <button onclick="switchTab('nav-tab-market')" id="nav-tab-market" class="flex-1 flex flex-col items-center py-1 transition-all hover:text-slate-200">
+                <i class="fas fa-search text-lg mb-1"></i>
+                <span class="text-[9px] font-black uppercase">Pasar</span>
+            </button>
+            <button onclick="switchTab('nav-tab-sell')" id="nav-tab-sell" class="flex-1 flex flex-col items-center py-1 transition-all hover:text-slate-200">
+                <i class="fas fa-plus-circle text-lg mb-1"></i>
+                <span class="text-[9px] font-black uppercase">Tambah</span>
+            </button>
+            <button onclick="switchTab('nav-tab-stats')" id="nav-tab-stats" class="flex-1 flex flex-col items-center py-1 transition-all hover:text-slate-200">
+                <i class="fas fa-chart-bar text-lg mb-1"></i>
+                <span class="text-[9px] font-black uppercase">Impak</span>
+            </button>
+            <button onclick="switchTab('nav-tab-profile')" id="nav-tab-profile" class="flex-1 flex flex-col items-center py-1 transition-all hover:text-slate-200">
+                <i class="fas fa-user-circle text-lg mb-1"></i>
+                <span class="text-[9px] font-black uppercase">Profil</span>
+            </button>
+        </nav>
+
+        <!-- Simulated Android Navigation Gesture Bar -->
+        <div class="bg-slate-950 pt-1.5 pb-2.5 flex justify-center shrink-0">
+            <div class="w-32 h-1 bg-slate-700/60 rounded-full"></div>
+        </div>
+
+        <!-- APP DIALOG MODAL 1: Successful Booking Receipt with PSS Instructions -->
+        <div id="modal-booking-receipt" class="hidden absolute inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-5 transition-all duration-300">
+            <div class="bg-slate-900 border border-slate-800 rounded-[35px] p-6 space-y-4 w-full max-w-[350px] text-center shadow-2xl relative overflow-hidden">
+                <!-- Color bar decorative -->
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+
+                <div class="w-14 h-14 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400 text-3xl mx-auto mt-2">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+
+                <div class="space-y-1">
+                    <h3 class="text-base font-black text-white">Tempahan Berjaya!</h3>
+                    <p class="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Resit Tempahan Hijau SKSL</p>
+                </div>
+
+                <!-- Printed receipt table layout -->
+                <div class="bg-slate-950 border border-slate-850 rounded-2xl p-4 text-left space-y-2.5 text-xs">
+                    <div class="flex justify-between items-center border-b border-slate-900 pb-2">
+                        <span class="text-slate-500 text-[10px] uppercase font-bold">ID Tempahan</span>
+                        <span id="rcpt-booking-id" class="font-mono font-black text-emerald-400">T-00000</span>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <span class="text-slate-500 text-[9px] uppercase font-bold block">Buku Terpakai</span>
+                        <h4 id="rcpt-book-title" class="font-black text-slate-200 truncate">Sains</h4>
+                        <p id="rcpt-book-sub" class="text-[10px] text-slate-400">Sains | Tahun 6</p>
+                    </div>
+
+                    <div class="flex justify-between items-center border-t border-slate-900 pt-2.5">
+                        <span class="text-slate-500 text-[10px] uppercase font-bold">Penjaga (Pemilik)</span>
+                        <span id="rcpt-book-owner" class="font-bold text-slate-300">Puan Aminah</span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-500 text-[10px] uppercase font-bold">Jenis / Harga</span>
+                        <span id="rcpt-book-price" class="font-black text-amber-400">RM5.00</span>
+                    </div>
+                </div>
+
+                <!-- Library instruction guidelines -->
+                <div class="bg-emerald-950/20 border border-emerald-900/30 rounded-2xl p-3.5 text-left flex gap-3">
+                    <span class="text-emerald-400 text-xs mt-0.5 shrink-0"><i class="fas fa-school-flag"></i></span>
+                    <p class="text-[10px] text-slate-300 leading-normal">
+                        <span class="font-black text-emerald-400 block mb-0.5">Tindakan Setakat Ini:</span>
+                        Urusan selesai di atas talian! Sila berjumpa dengan <span class="font-bold text-white">Guru PSS</span> di perpustakaan bersama anak anda untuk mengesahkan dan mengambil fizikal buku.
+                    </p>
+                </div>
+
+                <div class="pt-1.5 flex gap-2">
+                    <button id="btn-copy-rcpt" onclick="copyReceiptDetails()" class="flex-1 bg-slate-800 hover:bg-slate-750 text-slate-300 font-bold py-3 rounded-xl text-xs transition-all">
+                        <i class="fas fa-copy"></i> Salin Info
+                    </button>
+                    <button onclick="closeReceiptModal()" class="flex-1 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 text-slate-950 font-black py-3 rounded-xl text-xs transition-all shadow-md">
+                        Tutup Resit
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP DIALOG MODAL 2: Dynamic Printable Certificate Overlay -->
+        <div id="modal-certificate-view" class="hidden absolute inset-0 bg-slate-950/98 z-50 flex flex-col justify-between p-6">
+            <div class="flex justify-between items-center shrink-0 pb-4">
+                <span class="text-xs text-slate-400 font-black tracking-wider uppercase">Sijil Penghargaan</span>
+                <button onclick="closeCertModal()" class="text-slate-400 hover:text-white p-1 text-lg">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+            </div>
+
+            <!-- Beautiful printable certificate viewport container -->
+            <div class="flex-1 flex items-center justify-center p-2">
+                <div id="certificate-print-area" class="w-full max-w-[340px] aspect-[4/3] bg-amber-50 rounded-3xl p-5 border-[6px] border-double border-emerald-800 shadow-2xl text-slate-900 text-center relative overflow-hidden flex flex-col justify-between">
+                    <!-- Certificate Frames & Background watermark -->
+                    <div class="absolute inset-0 border border-emerald-950 m-1 rounded-2xl pointer-events-none"></div>
+                    
+                    <div class="space-y-1">
+                        <h3 class="text-xs font-black tracking-widest text-emerald-800 uppercase">SJKC / SK SMART LESTARI</h3>
+                        <p class="text-[7px] text-slate-500 tracking-wider font-extrabold uppercase">Inisiatif Hijau & Kelestarian PSS</p>
+                    </div>
+
+                    <div class="space-y-1">
+                        <h2 class="text-base font-black text-emerald-950 tracking-tight">SIJIL PENGHARGAAN</h2>
+                        <p class="text-[7px] text-slate-500 italic">Dianugerahkan Kepada Keluarga Lestari:</p>
+                    </div>
+
+                    <div class="space-y-1 py-1">
+                        <h4 id="cert-output-parent-name" class="text-sm font-black text-slate-900 uppercase border-b border-emerald-950/20 pb-0.5 inline-block px-4 font-serif">PUAN FARAH</h4>
+                        <p class="text-[7px] text-slate-500">Ibu Bapa / Penjaga kepada Pelajar: <span id="cert-output-child-name" class="font-bold text-slate-800">-</span> (<span id="cert-output-class" class="font-bold">-</span>)</p>
+                    </div>
+
+                    <p class="text-[7px] text-slate-600 max-w-[260px] mx-auto leading-relaxed">
+                        Atas sumbangan dan sokongan murni menderma atau membeli buku rujukan lama di platform <span class="font-bold">Pasar Buku Digital</span> bagi menyelamatkan sisa karbon kertas sekolah demi masa depan yang lestari.
+                    </p>
+
+                    <div class="flex justify-between items-end px-3 pt-2">
+                        <div class="text-left text-[6px] text-slate-500 space-y-0.5">
+                            <p class="font-bold text-slate-800">GURU PENYELARAS PSS</p>
+                            <p>Siti Nurhaliza (Penyelaras PSS)</p>
+                            <p>Tarikh: <span class="font-mono text-slate-600">07/06/2026</span></p>
+                        </div>
+                        <div class="w-10 h-10 bg-emerald-800/10 rounded-full flex items-center justify-center border border-emerald-800/30 text-emerald-800 text-[10px]">
+                            <i class="fas fa-leaf animate-spin-slow"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shrink-0 space-y-2 pt-4">
+                <button onclick="printCertificate()" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 text-slate-950 font-black py-3.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md">
+                    <i class="fas fa-print"></i> Cetak Sijil Digital
+                </button>
+                <p class="text-[9px] text-slate-500 text-center">Sijil digital rasmi sekolah yang boleh disokong untuk pengiktirafan kokurikulum (PAJSK).</p>
+            </div>
+        </div>
+
+        <!-- Custom Notification Android Toast Alert -->
+        <div id="toast-container" class="absolute top-16 left-6 right-6 bg-slate-900 border border-emerald-500/40 px-4 py-3.5 rounded-2xl flex items-center gap-3.5 shadow-2xl transition-all duration-300 transform -translate-y-28 opacity-0 z-50">
+            <div class="w-8 h-8 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400 text-base shrink-0 border border-emerald-500/20">
+                <i class="fas fa-seedling text-xs"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+                <p id="toast-text-msg" class="text-[10px] text-slate-200 font-bold leading-normal">-</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATASET & LOCAL STORAGE PERSISTENCE SYSTEM ---
+        
+        // Default Mock Data for Books (Loaded if LocalStorage is Empty)
+        const initialBooksDefault = [
+            {
+                id: 1,
+                title: "Buku Rujukan Hebat Sains Tahun 6",
+                subject: "Sains",
+                year: "Tahun 6",
+                condition: "Sangat Baik",
+                price: 5.00,
+                type: "Jual",
+                owner: "Puan Aminah (Ibu Sufian)",
+                refNum: "B-9102",
+                status: "Untuk Dijual",
+                bookedBy: "",
+                bookingId: ""
+            },
+            {
+                id: 2,
+                title: "Matematik Efektif Tingkatan 3 (KSSM)",
+                subject: "Matematik",
+                year: "Tingkatan 3",
+                condition: "Baik",
+                price: 0.00,
+                type: "Derma",
+                owner: "Encik Tan (Bapa Chloe)",
+                refNum: "B-4812",
+                status: "Percuma",
+                bookedBy: "",
+                bookingId: ""
+            },
+            {
+                id: 3,
+                title: "Koleksi Sejarah Tingkatan 5 SPM Hebat",
+                subject: "Sejarah",
+                year: "Tingkatan 5",
+                condition: "Sederhana",
+                price: 7.50,
+                type: "Jual",
+                owner: "Encik Gopal Raj (Bapa Arjun)",
+                refNum: "B-3912",
+                status: "Telah Ditempah",
+                bookedBy: "Puan Farah (Ibu Mia)",
+                bookingId: "T-89412"
+            },
+            {
+                id: 4,
+                title: "Geografi Visual Tingkatan 1",
+                subject: "Geografi",
+                year: "Tingkatan 1",
+                condition: "Sangat Baik",
+                price: 0.00,
+                type: "Derma",
+                owner: "Puan Farah (Ibu Mia)",
+                refNum: "B-1033",
+                status: "Percuma",
+                bookedBy: "",
+                bookingId: ""
+            }
+        ];
+
+        // Global States (Loaded from Local Storage or initialized with values)
+        let stateUser = {
+            name: "Puan Farah (Ibu Mia)",
+            phone: "019-8765432",
+            address: "No. 34, Jalan Utama, Taman Lestari, 43000 Kajang, Selangor",
+            childName: "Mia Amanda",
+            class: "6 Gemilang",
+            role: "Ibu Bapa (Penjual)",
+            points: 45
+        };
+
+        let stateBooks = [];
+        let statePointsHistory = [];
+
+        // Application Navigation & Interaction Flags
+        let activeTab = "nav-tab-dash";
+        let activeMarketFilter = "all";
+        let activeAddBookType = "Jual";
+        let pssTeacherModeActive = false;
+
+        // SOUND EFFECTS: Lightweight Web Audio Synthesizer (Zero reliance on URLs)
+        function playAppSound(toneType) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                
+                if (toneType === 'click') {
+                    // Quick Android-like subtle tap sound
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.1);
+                } 
+                else if (toneType === 'success') {
+                    // Uplifting double-tone positive response
+                    const osc1 = ctx.createOscillator();
+                    const osc2 = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc1.type = 'triangle';
+                    osc1.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc1.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+                    
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                    
+                    osc1.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc1.start();
+                    osc1.stop(ctx.currentTime + 0.4);
+                }
+                else if (toneType === 'levelup') {
+                    // Festive warm major triad melody for certificate unlock
+                    const tones = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    tones.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, ctx.currentTime + (idx * 0.1));
+                        gain.gain.setValueAtTime(0.08, ctx.currentTime + (idx * 0.1));
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (idx * 0.1) + 0.3);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(ctx.currentTime + (idx * 0.1));
+                        osc.stop(ctx.currentTime + (idx * 0.1) + 0.3);
+                    });
+                }
+            } catch (err) {
+                console.warn("Audio Context blocked or not supported by browser security policy.", err);
+            }
+        }
+
+        // --- IN-APP ALERTS / ANDROID TOAST SYSTEM ---
+        function triggerToastNotification(message) {
+            const toast = document.getElementById("toast-container");
+            const toastTxt = document.getElementById("toast-text-msg");
+            
+            toastTxt.innerText = message;
+            toast.classList.remove("-translate-y-28", "opacity-0");
+            toast.classList.add("translate-y-0", "opacity-100");
+
+            setTimeout(() => {
+                toast.classList.remove("translate-y-0", "opacity-100");
+                toast.classList.add("-translate-y-28", "opacity-0");
+            }, 3500);
+        }
+
+        // Initialize state on Load
+        window.addEventListener("load", () => {
+            // Android clock auto tick
+            const updateAndroidClock = () => {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                document.getElementById("android-clock").innerText = 
+                    `${hours < 10 ? '0'+hours : hours}:${minutes < 10 ? '0'+minutes : minutes}`;
+            };
+            updateAndroidClock();
+            setInterval(updateAndroidClock, 30000);
+
+            // Fetch stored settings or init Defaults
+            initializeLocalStorageDatabase();
+
+            // Set up all DOM interactive event listeners
+            setupInAppEventListeners();
+
+            // Sync database info to display elements
+            syncInAppStateWithUiDisplay();
+        });
+
+        function initializeLocalStorageDatabase() {
+            // Check for user profile storage
+            const storedUser = localStorage.getItem("sksl_pbd_user");
+            if (storedUser) {
+                stateUser = JSON.parse(storedUser);
+            } else {
+                localStorage.setItem("sksl_pbd_user", JSON.stringify(stateUser));
+            }
+
+            // Check for books repository
+            const storedBooks = localStorage.getItem("sksl_pbd_books");
+            if (storedBooks) {
+                stateBooks = JSON.parse(storedBooks);
+            } else {
+                stateBooks = initialBooksDefault;
+                localStorage.setItem("sksl_pbd_books", JSON.stringify(stateBooks));
+            }
+
+            // Check for points log history
+            const storedHistory = localStorage.getItem("sksl_pbd_history");
+            if (storedHistory) {
+                statePointsHistory = JSON.parse(storedHistory);
+            } else {
+                statePointsHistory = [
+                    { id: 1, action: "Berjaya Daftar Keahlian Keluarga Lestari", points: 30, date: "07/06/2026" },
+                    { id: 2, action: "Menyenaraikan Buku Rujukan Terpakas Pertama", points: 15, date: "07/06/2026" }
+                ];
+                localStorage.setItem("sksl_pbd_history", JSON.stringify(statePointsHistory));
+            }
+        }
+
+        function saveStateToLocalStorage() {
+            localStorage.setItem("sksl_pbd_user", JSON.stringify(stateUser));
+            localStorage.setItem("sksl_pbd_books", JSON.stringify(stateBooks));
+            localStorage.setItem("sksl_pbd_history", JSON.stringify(statePointsHistory));
+        }
+
+        function syncInAppStateWithUiDisplay() {
+            // Sync Header values
+            document.getElementById("header-user-points").innerText = stateUser.points;
+
+            // Welcome banner dashboard
+            document.getElementById("dash-welcome-name").innerText = stateUser.name;
+            document.getElementById("dash-welcome-child").innerText = stateUser.childName;
+            document.getElementById("dash-welcome-class").innerText = stateUser.class;
+
+            // Stats Quick Glance Box
+            document.getElementById("dash-stat-points").innerText = stateUser.points;
+            
+            // Calculative indicators
+            let sumSavings = calculateTotalEcoSavingsVal();
+            document.getElementById("dash-stat-savings").innerText = `RM${sumSavings.toFixed(2)}`;
+
+            // Profile view form sync
+            document.getElementById("prof-input-parent").value = stateUser.name;
+            document.getElementById("prof-input-phone").value = stateUser.phone;
+            document.getElementById("prof-input-address").value = stateUser.address;
+            document.getElementById("prof-input-child").value = stateUser.childName;
+            document.getElementById("prof-input-class").value = stateUser.class;
+            document.getElementById("prof-input-role").value = stateUser.role;
+
+            // Update Level Badge Indicators
+            syncGamificationBadgesProgress();
+
+            // Populate Points logs
+            populatePointsLogHistoryUi();
+        }
+
+        function calculateTotalEcoSavingsVal() {
+            // Calculations logic: Transacted books count multiplied by original mock retail cost average (approx RM15)
+            const transactedCount = stateBooks.filter(b => b.status === "Telah Ditukar-Milik" && b.bookedBy === stateUser.name).length;
+            return transactedCount * 15.00;
+        }
+
+        function syncGamificationBadgesProgress() {
+            const currentPoints = stateUser.points;
+            const badgeLabel = document.getElementById("dash-badge-title");
+            const progressBar = document.getElementById("dash-badge-progress-bar");
+            const minPointsLbl = document.getElementById("dash-badge-min-points");
+            const nextPointsLbl = document.getElementById("dash-badge-next-points");
+
+            let currentLevelBadge = "Rookie Hijau";
+            let milestoneLimit = 100;
+
+            if (currentPoints >= 100 && currentPoints < 250) {
+                currentLevelBadge = "Keluarga Lestari Pro";
+                milestoneLimit = 250;
+            } else if (currentPoints >= 250) {
+                currentLevelBadge = "Duta Hijau Pintar";
+                milestoneLimit = 500;
+            }
+
+            badgeLabel.innerText = currentLevelBadge;
+            minPointsLbl.innerText = `${currentPoints} Mata`;
+
+            const computedPercentage = Math.min((currentPoints / milestoneLimit) * 100, 100);
+            progressBar.style.width = `${computedPercentage}%`;
+
+            if (currentPoints >= 500) {
+                nextPointsLbl.innerText = "Level Maksimum! 🌳";
+            } else {
+                nextPointsLbl.innerText = `Kumpul ${milestoneLimit} Mata untuk Level Seterusnya`;
+            }
+
+            // Sync Certificate unlock criteria states
+            const certBox = document.getElementById("wrapper-cert-card");
+            const certIcon = document.getElementById("cert-icon-box");
+            const certGlow = document.getElementById("cert-unlocked-glow");
+            const certTitle = document.getElementById("cert-title-label");
+            const certDesc = document.getElementById("cert-desc-label");
+            const certBtn = document.getElementById("btn-action-cert");
+
+            if (currentPoints >= 100) {
+                // Unlock visual decorations
+                certBox.className = "bg-slate-900 border-2 border-dashed border-emerald-500/50 rounded-3xl p-5 text-center space-y-3.5 relative overflow-hidden transition-all duration-300 shadow-[0_4px_20px_rgba(16,185,129,0.1)]";
+                certIcon.className = "text-yellow-500 text-4xl mx-auto animate-bounce";
+                certGlow.classList.remove("opacity-0");
+                certGlow.classList.add("opacity-100");
+                certTitle.innerText = "Sijil Anda Sedia Dimuat Turun!";
+                certDesc.innerHTML = "Hebat! Anda berjaya mengumpul sekurang-kurangnya <span class='font-black text-emerald-400'>100 Mata Hijau</span>.";
+                
+                certBtn.removeAttribute("disabled");
+                certBtn.className = "w-full bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 text-slate-950 font-black py-3 rounded-xl text-xs transition-all shadow-md active:scale-95 cursor-pointer";
+                certBtn.innerText = "Muat Turun Sijil Lestari";
+            } else {
+                // Lock states reset
+                certBox.className = "bg-slate-900 border-2 border-dashed border-slate-800 rounded-3xl p-5 text-center space-y-3.5 relative overflow-hidden transition-all duration-300";
+                certIcon.className = "text-slate-600 text-4xl mx-auto";
+                certGlow.classList.remove("opacity-100");
+                certGlow.classList.add("opacity-0");
+                certTitle.innerText = "Sijil Penghargaan Murid Lestari";
+                certDesc.innerHTML = "Buka kunci sijil penghargaan digital ini dengan mengumpul sekurang-kurangnya <span class='font-extrabold text-emerald-400'>100 Mata Hijau</span>.";
+                
+                certBtn.setAttribute("disabled", "true");
+                certBtn.className = "w-full bg-slate-800 text-slate-500 font-bold py-3 rounded-xl text-xs transition-all cursor-not-allowed";
+                certBtn.innerText = "Sijil Terkunci";
+            }
+        }
+
+        function populatePointsLogHistoryUi() {
+            const historyContainer = document.getElementById("wrapper-points-log-history");
+            historyContainer.innerHTML = "";
+
+            if (statePointsHistory.length === 0) {
+                historyContainer.innerHTML = `<p class="text-slate-500 text-xs text-center py-4">Tiada rekod mata hijau ditemui.</p>`;
+                return;
+            }
+
+            statePointsHistory.forEach(log => {
+                const item = document.createElement("div");
+                item.className = "flex justify-between items-center bg-slate-950 border border-slate-850 p-3 rounded-xl transition-all";
+                item.innerHTML = `
+                    <div class="min-w-0 pr-2">
+                        <p class="font-extrabold text-slate-200 text-xs truncate">${log.action}</p>
+                        <span class="text-[8px] text-slate-500 font-mono block mt-0.5">${log.date}</span>
+                    </div>
+                    <span class="text-emerald-400 font-extrabold text-xs shrink-0 font-mono">+${log.points} XP</span>
+                `;
+                historyContainer.appendChild(item);
+            });
+        }
+
+        function switchTab(activeId) {
+            playAppSound('click');
+            activeTab = activeId;
+
+            const tabMapping = {
+                'nav-tab-dash': 'screen-dashboard',
+                'nav-tab-market': 'screen-market',
+                'nav-tab-sell': 'screen-sell',
+                'nav-tab-stats': 'screen-stats',
+                'nav-tab-profile': 'screen-profile'
+            };
+
+            // Switch Screen visibility
+            Object.keys(tabMapping).forEach(key => {
+                const screenEl = document.getElementById(tabMapping[key]);
+                const navBtn = document.getElementById(key);
+
+                if (key === activeId) {
+                    screenEl.classList.remove("hidden");
+                    navBtn.className = "flex-1 flex flex-col items-center py-1 transition-all text-emerald-400";
+                } else {
+                    screenEl.classList.add("hidden");
+                    navBtn.className = "flex-1 flex flex-col items-center py-1 transition-all text-slate-400 hover:text-slate-200";
+                }
+            });
+
+            // Specific UI renders based on selected screens
+            if (activeId === 'nav-tab-market') {
+                renderMarketplaceCards();
+            } else if (activeId === 'nav-tab-stats') {
+                calculateAndRenderImpactStatistics();
+            }
+
+            // Close teacher mode if navigating elsewhere
+            if (activeId !== 'nav-tab-dash' && pssTeacherModeActive) {
+                toggleTeacherMode(false);
+            }
+        }
+
+        function setAddBookType(type) {
+            playAppSound('click');
+            activeAddBookType = type;
+            const sellBtn = document.getElementById("btn-type-sell");
+            const donateBtn = document.getElementById("btn-type-donate");
+            const priceWrapper = document.getElementById("wrapper-book-price");
+            const priceInput = document.getElementById("add-book-price");
+
+            if (type === "Jual") {
+                sellBtn.className = "py-3 bg-slate-900 border-2 border-emerald-500 text-emerald-400 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all";
+                donateBtn.className = "py-3 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all";
+                priceWrapper.classList.remove("opacity-30", "pointer-events-none");
+                priceInput.removeAttribute("disabled");
+                priceInput.value = "5.00";
+            } else {
+                sellBtn.className = "py-3 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all";
+                donateBtn.className = "py-3 bg-slate-900 border-2 border-teal-500 text-teal-400 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all";
+                priceWrapper.classList.add("opacity-30", "pointer-events-none");
+                priceInput.setAttribute("disabled", "true");
+                priceInput.value = "0.00";
+            }
+        }
+
+        function handleListingSubmit(e) {
+            e.preventDefault();
+
+            const title = document.getElementById("add-book-title").value.trim();
+            const subject = document.getElementById("add-book-subject").value;
+            const year = document.getElementById("add-book-year").value;
+            const condition = document.getElementById("add-book-condition").value;
+            const price = activeAddBookType === "Jual" ? parseFloat(document.getElementById("add-book-price").value) : 0;
+
+            if (!title || !subject || !year || !condition) {
+                triggerToastNotification("Sila isi semua medan borang!");
+                return;
+            }
+
+            // Create Book Structure ID
+            const newId = stateBooks.length > 0 ? Math.max(...stateBooks.map(b => b.id)) + 1 : 1;
+            const refNum = "B-" + Math.floor(1000 + Math.random() * 9000);
+            
+            const newBook = {
+                id: newId,
+                title: title,
+                subject: subject,
+                year: year,
+                condition: condition,
+                price: price,
+                type: activeAddBookType,
+                owner: stateUser.name,
+                refNum: refNum,
+                status: activeAddBookType === "Derma" ? "Percuma" : "Untuk Dijual",
+                bookedBy: "",
+                bookingId: ""
+            };
+
+            // Inject into DB state
+            stateBooks.unshift(newBook);
+
+            // Compute Points rewards based on category
+            const pointsReward = activeAddBookType === "Derma" ? 20 : 5;
+            stateUser.points += pointsReward;
+
+            // Log Transaction Action
+            const today = new Date().toLocaleDateString("ms-MY");
+            statePointsHistory.unshift({
+                id: statePointsHistory.length + 1,
+                action: `Menyenaraikan Buku: ${title} (${activeAddBookType})`,
+                points: pointsReward,
+                date: today
+            });
+
+            // Persist & sync UI indicators
+            saveStateToLocalStorage();
+            syncInAppStateWithUiDisplay();
+            playAppSound('success');
+
+            triggerToastNotification(`🎉 Buku tersenarai! +${pointsReward} Mata Hijau diperolehi.`);
+
+            // Reset UI Forms
+            document.getElementById("form-add-book").reset();
+            setAddBookType("Jual");
+
+            // Redirect automatically to Marketplace listing
+            setTimeout(() => {
+                switchTab('nav-tab-market');
+            }, 600);
+        }
+
+        function setMarketFilter(filterValue) {
+            playAppSound('click');
+            activeMarketFilter = filterValue;
+
+            const btnIds = {
+                'all': 'filter-btn-all',
+                'free': 'filter-btn-free',
+                'paid': 'filter-btn-paid',
+                'Sains': 'filter-btn-sains',
+                'Matematik': 'filter-btn-math'
+            };
+
+            Object.keys(btnIds).forEach(key => {
+                const btn = document.getElementById(btnIds[key]);
+                if (key === filterValue) {
+                    btn.className = "px-3.5 py-2 bg-emerald-500 text-slate-950 rounded-full font-black transition-all";
+                } else {
+                    btn.className = "px-3.5 py-2 bg-slate-950 border border-slate-800 text-slate-400 rounded-full font-bold hover:border-emerald-500/40 hover:text-emerald-400 transition-all";
+                }
+            });
+
+            renderMarketplaceCards();
+        }
+
+        function renderMarketplaceCards() {
+            const container = document.getElementById("market-books-container");
+            const searchVal = document.getElementById("market-search-input").value.toLowerCase().trim();
+            container.innerHTML = "";
+
+            // Filtering calculations
+            const filtered = stateBooks.filter(b => {
+                const matchesSearch = b.title.toLowerCase().includes(searchVal) || b.subject.toLowerCase().includes(searchVal);
+                
+                let matchesCategory = true;
+                if (activeMarketFilter === "free") {
+                    matchesCategory = (b.price === 0);
+                } else if (activeMarketFilter === "paid") {
+                    matchesCategory = (b.price > 0 && b.price <= 5.00);
+                } else if (activeMarketFilter !== "all") {
+                    matchesCategory = (b.subject === activeMarketFilter);
+                }
+
+                return matchesSearch && matchesCategory;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="py-16 text-center space-y-3.5">
+                        <span class="text-slate-600 text-4xl block"><i class="fas fa-search-minus"></i></span>
+                        <h5 class="text-slate-400 text-xs font-black">Buku Tidak Ditemui</h5>
+                        <p class="text-[10px] text-slate-550 max-w-[200px] mx-auto leading-relaxed">Tiada buku rujukan sepadan pada tapisan ini buat masa sekarang.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create cards elements
+            filtered.forEach(book => {
+                const card = document.createElement("div");
+                card.className = "bg-slate-900 border border-slate-850 p-4 rounded-2xl space-y-3.5 relative overflow-hidden transition-all hover:border-slate-800";
+                
+                let tagBadgeClass = "";
+                let tagBadgeText = "";
+                let actionBtnMarkup = "";
+
+                // Status configuration mapping
+                if (book.status === "Telah Ditempah") {
+                    tagBadgeClass = "bg-rose-500/10 text-rose-400 border border-rose-500/20";
+                    tagBadgeText = "Tempahan Diproses";
+                    actionBtnMarkup = `
+                        <button disabled class="w-full bg-slate-950 border border-slate-850 text-slate-500 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1 cursor-not-allowed">
+                            <i class="fas fa-ban"></i> Menunggu Guru PSS
+                        </button>
+                    `;
+                } else if (book.status === "Telah Ditukar-Milik") {
+                    tagBadgeClass = "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20";
+                    tagBadgeText = "Selesai Ditukar";
+                    actionBtnMarkup = `
+                        <button disabled class="w-full bg-slate-950 border border-slate-850 text-slate-500 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1 cursor-not-allowed">
+                            <i class="fas fa-check-circle"></i> Selesai Transaksi
+                        </button>
+                    `;
+                } else {
+                    // Available states (Jual vs Derma)
+                    if (book.price === 0) {
+                        tagBadgeClass = "bg-teal-500/10 text-teal-400 border border-teal-500/20";
+                        tagBadgeText = "🎁 Percuma / Derma";
+                        
+                        // Prevent buying your own book
+                        if (book.owner === stateUser.name) {
+                            actionBtnMarkup = `
+                                <button disabled class="w-full bg-slate-950 border border-slate-850 text-slate-500 font-semibold py-3 rounded-xl text-xs cursor-not-allowed">
+                                    Buku Sumbangan Anda
+                                </button>
+                            `;
+                        } else {
+                            actionBtnMarkup = `
+                                <button onclick="triggerBookPurchase(${book.id})" class="w-full bg-gradient-to-r from-teal-400 to-teal-500 hover:from-teal-500 text-slate-950 font-black py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95">
+                                    <i class="fas fa-handholding-heart"></i> Ambil Percuma
+                                </button>
+                            `;
+                        }
+                    } else {
+                        tagBadgeClass = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                        tagBadgeText = `RM${book.price.toFixed(2)}`;
+                        
+                        if (book.owner === stateUser.name) {
+                            actionBtnMarkup = `
+                                <button disabled class="w-full bg-slate-950 border border-slate-850 text-slate-500 font-semibold py-3 rounded-xl text-xs cursor-not-allowed">
+                                    Buku Jualan Anda
+                                </button>
+                            `;
+                        } else {
+                            actionBtnMarkup = `
+                                <button onclick="triggerBookPurchase(${book.id})" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 text-slate-950 font-black py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95">
+                                    <i class="fas fa-shopping-basket"></i> Tempah Buku
+                                </button>
+                            `;
+                        }
+                    }
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center text-[9px] font-bold">
+                        <span class="bg-slate-950 text-slate-400 border border-slate-850 px-2.5 py-1 rounded-full uppercase tracking-wider">${book.year} | ${book.subject}</span>
+                        <span class="px-2.5 py-1 rounded-full uppercase tracking-wider ${tagBadgeClass}">${tagBadgeText}</span>
+                    </div>
+
+                    <div class="space-y-1 text-left">
+                        <h4 class="text-xs font-black text-slate-200 leading-snug">${book.title}</h4>
+                        <div class="flex justify-between items-center text-[10px] text-slate-400">
+                            <span>Penjaga: <span class="text-slate-300 font-bold">${book.owner}</span></span>
+                            <span class="font-mono text-slate-500 text-[9px]">ID: ${book.refNum}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-[10px] bg-slate-950/40 px-3 py-2 rounded-xl border border-slate-950">
+                        <span class="text-slate-500">Kualiti Buku:</span>
+                        <span class="font-extrabold ${book.condition === 'Sangat Baik' ? 'text-emerald-400' : book.condition === 'Baik' ? 'text-teal-400' : 'text-amber-500'}">${book.condition}</span>
+                    </div>
+
+                    <div>
+                        ${actionBtnMarkup}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function triggerBookPurchase(bookId) {
+            const book = stateBooks.find(b => b.id === bookId);
+            if (!book) return;
+
+            // Lock book status state
+            const bookingId = "T-" + Math.floor(10000 + Math.random() * 90000);
+            book.status = "Telah Ditempah";
+            book.bookedBy = stateUser.name;
+            book.bookingId = bookingId;
+
+            // Reward buyers points for choosing green secondhand alternative
+            const buyerPointsBonus = 10;
+            stateUser.points += buyerPointsBonus;
+
+            // Log Points details history
+            const today = new Date().toLocaleDateString("ms-MY");
+            statePointsHistory.unshift({
+                id: statePointsHistory.length + 1,
+                action: `Membuat Tempahan Buku: ${book.title}`,
+                points: buyerPointsBonus,
+                date: today
+            });
+
+            // Persist
+            saveStateToLocalStorage();
+            syncInAppStateWithUiDisplay();
+
+            // Populate Modal Receipt Overlay
+            document.getElementById("rcpt-booking-id").innerText = bookingId;
+            document.getElementById("rcpt-book-title").innerText = book.title;
+            document.getElementById("rcpt-book-sub").innerText = `${book.subject} | ${book.year}`;
+            document.getElementById("rcpt-book-owner").innerText = book.owner;
+            document.getElementById("rcpt-book-price").innerText = book.price === 0 ? "🎁 Percuma" : `RM${book.price.toFixed(2)}`;
+
+            // Open overlay dialog
+            document.getElementById("modal-booking-receipt").classList.remove("hidden");
+            playAppSound('success');
+            triggerToastNotification("Tempahan berjaya disimpan! +10 Mata Hijau.");
+        }
+
+        function closeReceiptModal() {
+            playAppSound('click');
+            document.getElementById("modal-booking-receipt").classList.add("hidden");
+            renderMarketplaceCards();
+        }
+
+        function copyReceiptDetails() {
+            playAppSound('click');
+            const bId = document.getElementById("rcpt-booking-id").innerText;
+            const title = document.getElementById("rcpt-book-title").innerText;
+            const owner = document.getElementById("rcpt-book-owner").innerText;
+            
+            const txt = `PASAR BUKU DIGITAL SKSL\nID Tempahan: ${bId}\nBuku: ${title}\nPemilik Asal: ${owner}\nUrusan Fizikal: PSS Sekolah`;
+            
+            // Native clipboard fallback copying
+            const el = document.createElement('textarea');
+            el.value = txt;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            triggerToastNotification("📋 Info tempahan disalin ke papan keratan!");
+        }
+
+        function calculateAndRenderImpactStatistics() {
+            const totalListed = stateBooks.length;
+            const transactedList = stateBooks.filter(b => b.status === "Telah Ditukar-Milik");
+            const totalTransacted = transactedList.length;
+            const totalDonated = stateBooks.filter(b => b.type === "Derma" && b.status === "Telah Ditukar-Milik").length;
+            
+            // Estimate monetary community savings
+            let totalSavingsAccumulated = 0;
+            transactedList.forEach(b => {
+                // Calculation: (estimated book original retail value RM15) - (resell price)
+                totalSavingsAccumulated += (15.00 - b.price);
+            });
+
+            // Populate on Screen View labels
+            document.getElementById("stat-books-listed").innerText = totalListed;
+            document.getElementById("stat-books-transacted").innerText = totalTransacted;
+            document.getElementById("stat-books-donated").innerText = totalDonated;
+            document.getElementById("stat-savings-total").innerText = `RM${totalSavingsAccumulated.toFixed(2)}`;
+
+            // Carbon Saving Math Index: 1 book reused avoids 0.8kg CO2 paper waste output
+            const co2SavedTotal = totalListed * 0.8;
+            document.getElementById("stat-total-co2").innerText = `${co2SavedTotal.toFixed(1)} kg CO2`;
+
+            // Tree Equivalent absorption values: 1 mature tree absorbs ~22kg of CO2 per year
+            const treesPreservedValue = co2SavedTotal / 22;
+            document.getElementById("stat-equivalent-trees").innerHTML = 
+                `Membantu menyelamatkan bersamaan <span class="text-emerald-400 font-extrabold">${treesPreservedValue.toFixed(4)}</span> pokok dewasa!`;
+
+            // Set targets visual metric progress bar
+            const co2TargetPct = Math.min((co2SavedTotal / 100) * 100, 100);
+            document.getElementById("stat-co2-progress-bar").style.width = `${co2TargetPct}%`;
+        }
+
+        function downloadLestariCertificate() {
+            playAppSound('click');
+            // Synchronize Certificate info
+            document.getElementById("cert-output-parent-name").innerText = stateUser.name;
+            document.getElementById("cert-output-child-name").innerText = stateUser.childName;
+            document.getElementById("cert-output-class").innerText = stateUser.class;
+
+            document.getElementById("modal-certificate-view").classList.remove("hidden");
+            playAppSound('levelup');
+        }
+
+        function closeCertModal() {
+            playAppSound('click');
+            document.getElementById("modal-certificate-view").classList.add("hidden");
+        }
+
+        function printCertificate() {
+            playAppSound('click');
+            // Print certificate viewport section alone
+            const printContent = document.getElementById("certificate-print-area").outerHTML;
+            const originalBody = document.body.innerHTML;
+
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Sijil Penghargaan Lestari SKSL</title>');
+            printWindow.document.write('<link rel="stylesheet" href="https://cdn.tailwindcss.com">');
+            printWindow.document.write('<style>body { display: flex; align-items: center; justify-content: center; height: 100vh; background-color: #ffffff; margin:0; padding:0; }</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(printContent);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+
+        function saveUserProfileChange() {
+            const pName = document.getElementById("prof-input-parent").value.trim();
+            const phone = document.getElementById("prof-input-phone").value.trim();
+            const address = document.getElementById("prof-input-address").value.trim();
+            const childName = document.getElementById("prof-input-child").value.trim();
+            const childClass = document.getElementById("prof-input-class").value.trim();
+            const role = document.getElementById("prof-input-role").value;
+
+            if (!pName || !phone || !address || !childName || !childClass) {
+                triggerToastNotification("Ralat: Sila pastikan tiada medan kosong!");
+                return;
+            }
+
+            stateUser.name = pName;
+            stateUser.phone = phone;
+            stateUser.address = address;
+            stateUser.childName = childName;
+            stateUser.class = childClass;
+            stateUser.role = role;
+
+            saveStateToLocalStorage();
+            syncInAppStateWithUiDisplay();
+            playAppSound('success');
+
+            triggerToastNotification("✅ Maklumat profil keluarga dikemaskini!");
+        }
+
+        function setupInAppEventListeners() {
+            // Splash screen button
+            document.getElementById("btn-splash-continue").addEventListener("click", () => {
+                playAppSound('click');
+                document.getElementById("screen-splash").classList.add("hidden");
+                document.getElementById("screen-auth").classList.remove("hidden");
+            });
+
+            // Tabs toggle on Login/Register screen
+            document.getElementById("tab-btn-login").addEventListener("click", () => {
+                playAppSound('click');
+                toggleAuthTabs("login");
+            });
+            document.getElementById("tab-btn-register").addEventListener("click", () => {
+                playAppSound('click');
+                toggleAuthTabs("register");
+            });
+
+            // Registration form trigger submit
+            document.getElementById("form-register-new").addEventListener("submit", handleRegistrationFormSubmit);
+
+            // Instant fast Login trigger bypass
+            document.getElementById("btn-login-quick").addEventListener("click", handleFastBypassAuth);
+
+            // Listeners for Marketplace search query updates
+            document.getElementById("market-search-input").addEventListener("input", () => {
+                renderMarketplaceCards();
+            });
+
+            // New Book listing submission form hook
+            document.getElementById("form-add-book").addEventListener("submit", handleListingSubmit);
+
+            // Teacher mode triggers
+            document.getElementById("btn-toggle-pss-mode").addEventListener("click", () => {
+                playAppSound('click');
+                toggleTeacherMode(!pssTeacherModeActive);
+            });
+        }
+
+        function toggleAuthTabs(activeTabType) {
+            const loginBtn = document.getElementById("tab-btn-login");
+            const registerBtn = document.getElementById("tab-btn-register");
+            const loginPanel = document.getElementById("auth-login-panel");
+            const registerForm = document.getElementById("form-register-new");
+
+            if (activeTabType === "login") {
+                loginBtn.className = "py-2.5 rounded-lg text-xs font-bold text-emerald-400 bg-slate-950 border border-slate-850/50 transition-all";
+                registerBtn.className = "py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all";
+                loginPanel.classList.remove("hidden");
+                registerForm.classList.add("hidden");
+            } else {
+                loginBtn.className = "py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all";
+                registerBtn.className = "py-2.5 rounded-lg text-xs font-bold text-emerald-400 bg-slate-950 border border-slate-850/50 transition-all";
+                loginPanel.classList.add("hidden");
+                registerForm.classList.remove("hidden");
+            }
+        }
+
+        function handleRegistrationFormSubmit(e) {
+            e.preventDefault();
+
+            const pName = document.getElementById("reg-parent-name").value.trim();
+            const phone = document.getElementById("reg-phone").value.trim();
+            const address = document.getElementById("reg-address").value.trim();
+            const childName = document.getElementById("reg-child-name").value.trim();
+            const childClass = document.getElementById("reg-class").value;
+
+            if (!pName || !phone || !address || !childName || !childClass) {
+                triggerToastNotification("Sila lengkapkan semua maklumat pendaftaran!");
+                return;
+            }
+
+            // Save new customized profile states
+            stateUser = {
+                name: pName,
+                phone: phone,
+                address: address,
+                childName: childName,
+                class: childClass,
+                role: "Ibu Bapa (Penjual)",
+                points: 30 // Registration bonus starter credits
+            };
+
+            // Log Registration history point
+            statePointsHistory = [
+                { id: 1, action: "Berjaya Daftar Keahlian Keluarga Lestari", points: 30, date: new Date().toLocaleDateString("ms-MY") }
+            ];
+
+            // Persist
+            saveStateToLocalStorage();
+            syncInAppStateWithUiDisplay();
+
+            // Unlock and load dashboard
+            triggerToastNotification("🎉 Pendaftaran Berjaya! Akaun anda diaktifkan.");
+            proceedToDashboardScreen();
+        }
+
+        function handleFastBypassAuth() {
+            // Load existing configurations inside Local Storage if any, else loads standard
+            proceedToDashboardScreen();
+            triggerToastNotification("🔑 Log masuk pantas akaun keluarga berjaya!");
+        }
+
+        function proceedToDashboardScreen() {
+            document.getElementById("screen-auth").classList.add("hidden");
+            document.getElementById("screen-dashboard").classList.remove("hidden");
+            
+            // Make app header and bottom navigation visible
+            document.getElementById("main-app-header").classList.remove("hidden");
+            document.getElementById("main-app-nav").classList.remove("hidden");
+
+            playAppSound('success');
+            switchTab('nav-tab-dash');
+        }
+
+        function toggleTeacherMode(enable) {
+            pssTeacherModeActive = enable;
+            const pssScreen = document.getElementById("screen-pss");
+            const viewHeader = document.getElementById("main-app-header");
+            const toggleBtn = document.getElementById("btn-toggle-pss-mode");
+
+            // Hide normal tabs screens and navigate to teacher control panel
+            if (enable) {
+                // Hide all standard pages
+                const screens = ['screen-dashboard', 'screen-market', 'screen-sell', 'screen-stats', 'screen-profile'];
+                screens.forEach(id => document.getElementById(id).classList.add("hidden"));
+                
+                pssScreen.classList.remove("hidden");
+                toggleBtn.innerText = "Mod Ibu Bapa";
+                toggleBtn.className = "bg-teal-500 text-[9px] font-black text-slate-950 px-2 py-1 rounded-lg hover:bg-teal-400 transition-all flex items-center gap-1";
+
+                renderTeacherModerationList();
+            } else {
+                pssScreen.classList.add("hidden");
+                toggleBtn.innerText = "Mod PSS";
+                toggleBtn.className = "bg-slate-950/40 text-[9px] font-bold text-teal-300 border border-teal-500/30 px-2 py-1 rounded-lg hover:bg-slate-950/80 transition-all flex items-center gap-1";
+                
+                // Return to normal viewport loop
+                switchTab('nav-tab-dash');
+            }
+        }
+
+        function renderTeacherModerationList() {
+            const listContainer = document.getElementById("pss-active-bookings-list");
+            const pendingBadge = document.getElementById("pss-pending-count");
+            listContainer.innerHTML = "";
+
+            // Filters books that are pending teacher confirmation ("Telah Ditempah")
+            const pendingList = stateBooks.filter(b => b.status === "Telah Ditempah");
+            pendingBadge.innerText = pendingList.length;
+
+            if (pendingList.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="py-12 text-center bg-slate-900/40 rounded-3xl border border-slate-850 space-y-3">
+                        <span class="text-slate-650 text-3xl block"><i class="fas fa-check-double"></i></span>
+                        <h5 class="text-slate-400 text-xs font-black">Tiada Tempahan Menunggu</h5>
+                        <p class="text-[9px] text-slate-500 max-w-[220px] mx-auto">Semua urusan buku fizikal buat masa sekarang telah selesai diproses.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            pendingList.forEach(book => {
+                const item = document.createElement("div");
+                item.className = "bg-slate-900 border border-slate-800 p-4 rounded-2xl text-left space-y-3 relative overflow-hidden";
+                item.innerHTML = `
+                    <div class="flex justify-between items-center text-[9px] font-extrabold">
+                        <span class="bg-slate-950 text-teal-400 border border-slate-850 px-2 py-0.5 rounded">${book.year}</span>
+                        <span class="bg-rose-500/10 text-rose-400 px-2 py-0.5 rounded font-mono">Tempah ID: ${book.bookingId}</span>
+                    </div>
+
+                    <div class="space-y-1">
+                        <h4 class="text-xs font-extrabold text-white leading-snug">${book.title}</h4>
+                        <div class="grid grid-cols-2 gap-1 text-[9px] text-slate-400 pt-0.5 border-t border-slate-850">
+                            <div>Penjual: <span class="text-slate-200 font-bold">${book.owner}</span></div>
+                            <div>Pembeli: <span class="text-slate-200 font-bold">${book.bookedBy}</span></div>
+                            <div class="col-span-2 mt-1">Jenis: <span class="text-amber-400 font-bold">${book.type === 'Derma' ? 'Derma / Percuma' : 'Jual (RM' + book.price.toFixed(2) + ')'}</span></div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-1.5">
+                        <button onclick="approveTransactionByTeacher(${book.id})" class="flex-1 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 text-slate-950 font-black py-2.5 rounded-xl text-[10px] transition-all shadow-md">
+                            <i class="fas fa-check"></i> Sahkan Serahan
+                        </button>
+                        <button onclick="cancelTransactionByTeacher(${book.id})" class="bg-slate-850 hover:bg-slate-800 text-rose-400 border border-rose-500/10 px-3 py-2 rounded-xl text-[10px] transition-all">
+                            Batal
+                        </button>
+                    </div>
+                `;
+
+                listContainer.appendChild(item);
+            });
+        }
+
+        function approveTransactionByTeacher(bookId) {
+            const book = stateBooks.find(b => b.id === bookId);
+            if (!book) return;
+
+            // Change status to fully transacted
+            book.status = "Telah Ditukar-Milik";
+
+            // Reward sellers points for completing physical drop-off
+            const pointsRewardedToSeller = book.type === "Derma" ? 25 : 10;
+            
+            // If seller is active user
+            if (book.owner === stateUser.name) {
+                stateUser.points += pointsRewardedToSeller;
+                statePointsHistory.unshift({
+                    id: statePointsHistory.length + 1,
+                    action: `Selesai Penyerahan Buku PSS: ${book.title}`,
+                    points: pointsRewardedToSeller,
+                    date: new Date().toLocaleDateString("ms-MY")
+                });
+            }
+
+            saveStateToLocalStorage();
+            syncInAppStateWithUiDisplay();
+            playAppSound('success');
+
+            triggerToastNotification("Selesai! Penyerahan fizikal disahkan & mata ganjaran dipindahkan.");
+            renderTeacherModerationList();
+        }
+
+        function cancelTransactionByTeacher(bookId) {
+            const book = stateBooks.find(b => b.id === bookId);
+            if (!book) return;
+
+            // Refund transaction status to Available state
+            book.status = book.type === "Derma" ? "Percuma" : "Untuk Dijual";
+            book.bookedBy = "";
+            book.bookingId = "";
+
+            saveStateToLocalStorage();
+            playAppSound('click');
+
+            triggerToastNotification("Tempahan berjaya dibatalkan. Status buku dikembalikan.");
+            renderTeacherModerationList();
+        }
+    </script>
+</body>
+</html>
